@@ -2,11 +2,11 @@
 
 Corteva Weather Data Engineering Pipeline
 
-By: Sri Padmavathi Manoharan, Data Engineer 
+By: Sri Padmavathi Manoharan (Data Engineer – 10+ years)
 
 This project is an end-to-end data engineering solution that processes 30 years of U.S. weather station data and exposes it through a fully documented REST API. It demonstrates real production-grade patterns: ingestion, validation, modeling, aggregation, API design, and idempotent processing.
 
-Project Overview
+📁 Project Overview
 
 This pipeline covers:
 
@@ -28,7 +28,7 @@ Swagger UI + OpenAPI Schema
 
 Production-ready project structure
 
-Project Structure
+📂 Project Structure
 corteva-pipeline/
 │
 ├── api/                     # FastAPI backend
@@ -45,7 +45,7 @@ corteva-pipeline/
 ├── screenshots/             # Added screenshots for HR review
 └── README.md
 
-1. Data Ingestion
+📥 1. Data Ingestion
 
 Command:
 
@@ -69,9 +69,9 @@ Example Output (Screenshot):
 Finished weather ingestion | files=167, inserted=0, skipped=1729957
 
 
-See screenshots/screenshot_ingestion_log.png
+👉 See screenshots/screenshot_ingestion_log.png
 
-2. Yearly Statistics Calculation
+📊 2. Yearly Statistics Calculation
 
 Command:
 
@@ -87,9 +87,9 @@ Average min temperature (°C)
 Total precipitation (cm)
 
 Screenshot:
- screenshots/screenshot_stats_job.png
+👉 screenshots/screenshot_stats_job.png
 
-3. Start the REST API
+🚀 3. Start the REST API
 
 Command:
 
@@ -102,9 +102,9 @@ http://127.0.0.1:8000
 
 
 Screenshot:
-screenshots/screenshot_api_running.png
+👉 screenshots/screenshot_api_running.png
 
-4. API Documentation (Swagger UI)
+📘 4. API Documentation (Swagger UI)
 
 Open in browser:
 
@@ -118,9 +118,9 @@ Each endpoint testable from UI
 Supports pagination + filters
 
 Screenshot:
-screenshots/screenshot_swagger_ui.png
+👉 screenshots/screenshot_swagger_ui.png
 
-5. API Endpoints
+🌐 5. API Endpoints
 GET /api/weather
 
 Returns daily weather records.
@@ -150,7 +150,7 @@ Sample Output:
 
 
 Screenshot:
-screenshots/screenshot_weather_api_response.png
+👉 screenshots/screenshot_weather_api_response.png
 
 GET /api/weather/stats
 
@@ -160,7 +160,7 @@ Example:
 
 http://127.0.0.1:8000/api/weather/stats?page=1&page_size=5
 
-Technologies Used
+🛠️ Technologies Used
 
 Python 3.11
 
