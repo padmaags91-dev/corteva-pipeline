@@ -1,0 +1,55 @@
+                          ┌────────────────────────┐
+                          │   Raw Weather Files    │
+                          │      (wx_data/)        │
+                          └────────────┬───────────┘
+                                       │
+                                       ▼
+                         ┌─────────────────────────┐
+                         │  Problem 2: Ingestion   │
+                         │  src/ingest_weather.py  │
+                         └────────────┬────────────┘
+                                      │
+                    Parses + cleans   │  Saves to DB
+             (date, max/min temp, precip, -9999→NULL)
+                                      │
+                                      ▼
+                     ┌────────────────────────────────┐
+                     │       SQLite Database           │
+                     │          weather.db             │
+                     │  Tables:                        │
+                     │   • weather_station             │
+                     │   • weather_observation         │
+                     │   • weather_stats_yearly        │
+                     └────────────────┬────────────────┘
+                                      │
+                                      ▼
+                   ┌───────────────────────────────────┐
+                   │  Problem 3: Yearly Aggregation    │
+                   │        src/calc_stats.py          │
+                   └──────────────────┬────────────────┘
+                                      │
+     Group By (station_id + year)     │   Calculates:
+     • avg max temp (°C)              │   • avg_max_temp_c
+     • avg min temp (°C)              │   • avg_min_temp_c
+     • total precip (cm)              │   • total_precip_cm
+                                      │
+                                      ▼
+                ┌────────────────────────────────────────┐
+                │   Updated weather_stats_yearly table   │
+                └───────────────────┬────────────────────┘
+                                    │
+                                    ▼
+                   ┌────────────────────────────────────┐
+                   │        Problem 4: REST API          │
+                   │          api/main.py (FastAPI)      │
+                   └──────────────────┬──────────────────┘
+                                      │
+         Provides JSON Endpoints      │
+         • /api/weather               │
+         • /api/weather/stats         │
+                                      │
+                                      ▼
+                        ┌──────────────────────────┐
+                        │    Swagger UI (Docs)     │
+                        │  http://127.0.0.1:8000/docs
+                        └──────────────────────────┘
