@@ -1,33 +1,34 @@
 # corteva-pipeline
 
-Corteva Weather Data Engineering Pipeline
 
-By: Sri Padmavathi Manoharan (Data Engineer – 10+ years)
+
+#  **Corteva Weather Data Engineering Pipeline**
+
+**By: Sri Padmavathi Manoharan (Data Engineer) **
 
 This project is an end-to-end data engineering solution that processes 30 years of U.S. weather station data and exposes it through a fully documented REST API. It demonstrates real production-grade patterns: ingestion, validation, modeling, aggregation, API design, and idempotent processing.
 
-📁 Project Overview
+---
+
+##  **Project Overview**
 
 This pipeline covers:
 
-Raw Data Ingestion (1.7M+ weather records)
+* **Raw Data Ingestion** (1.7M+ weather records)
+* **Database Modeling** (normalized schema with SQLAlchemy)
+* **Data Cleaning & Missing Data Handling**
+* **Idempotent Load Process**
+* **Yearly Statistics Calculation** (avg temps, total precipitation)
+* **REST API (FastAPI)**
+* **Filtering + Pagination**
+* **Swagger UI + OpenAPI Schema**
+* **Production-ready project structure**
 
-Database Modeling (normalized schema with SQLAlchemy)
+---
 
-Data Cleaning & Missing Data Handling
+# **Project Structure**
 
-Idempotent Load Process
-
-Yearly Statistics Calculation (avg temps, total precipitation)
-
-REST API (FastAPI)
-
-Filtering + Pagination
-
-Swagger UI + OpenAPI Schema
-
-Production-ready project structure
-
+```
 corteva-pipeline/
 │
 ├── api/                     # FastAPI backend
@@ -43,95 +44,106 @@ corteva-pipeline/
 ├── weather.db               # SQLite database
 ├── screenshots/             # Added screenshots for HR review
 └── README.md
+```
 
+---
 
-📥 1. Data Ingestion
+# **1. Data Ingestion**
 
 Command:
 
+```bash
 python -m src.ingest_weather
-
+```
 
 What happens:
 
-Reads 167 weather station files
+* Reads **167** weather station files
+* Cleans missing values (`-9999`)
+* Normalizes raw temperature/precipitation
+* Loads into **SQLite**
+* Prevents duplicates (idempotent)
 
-Cleans missing values (-9999)
+**Example Output (Screenshot):**
 
-Normalizes raw temperature/precipitation
-
-Loads into SQLite
-
-Prevents duplicates (idempotent)
-
-Example Output (Screenshot):
-
+```
 Finished weather ingestion | files=167, inserted=0, skipped=1729957
+```
 
+ *See `screenshots/screenshot_ingestion_log.png`*
 
-👉 See screenshots/screenshot_ingestion_log.png
+---
 
-📊 2. Yearly Statistics Calculation
+# **2. Yearly Statistics Calculation**
 
 Command:
 
+```bash
 python -m src.calc_stats
-
+```
 
 This creates aggregated metrics for each station:
 
-Average max temperature (°C)
+* Average max temperature (°C)
+* Average min temperature (°C)
+* Total precipitation (cm)
 
-Average min temperature (°C)
+**Screenshot:**
+ `screenshots/screenshot_stats_job.png`
 
-Total precipitation (cm)
+---
 
-Screenshot:
-👉 screenshots/screenshot_stats_job.png
-
-🚀 3. Start the REST API
+# **3. Start the REST API**
 
 Command:
 
+```bash
 uvicorn api.main:app --reload
-
+```
 
 Your API will run at:
 
+```
 http://127.0.0.1:8000
-
+```
 
 Screenshot:
-👉 screenshots/screenshot_api_running.png
+ `screenshots/screenshot_api_running.png`
 
-📘 4. API Documentation (Swagger UI)
+---
+
+#  **4. API Documentation (Swagger UI)**
 
 Open in browser:
 
+```
 http://127.0.0.1:8000/docs
+```
 
-
-Automatically generated via OpenAPI
-
-Each endpoint testable from UI
-
-Supports pagination + filters
+* Automatically generated via OpenAPI
+* Each endpoint testable from UI
+* Supports pagination + filters
 
 Screenshot:
-👉 screenshots/screenshot_swagger_ui.png
+`screenshots/screenshot_swagger_ui.png`
 
-🌐 5. API Endpoints
-GET /api/weather
+---
+
+#  **5. API Endpoints**
+
+### **GET /api/weather**
 
 Returns daily weather records.
 
 Example:
 
+```
 http://127.0.0.1:8000/api/weather?page=1&page_size=5
-
+```
 
 Sample Output:
 
+```json
 {
   "total": 1729957,
   "page": 1,
@@ -147,35 +159,93 @@ Sample Output:
     ...
   ]
 }
-
+```
 
 Screenshot:
-👉 screenshots/screenshot_weather_api_response.png
+ `screenshots/screenshot_weather_api_response.png`
 
-GET /api/weather/stats
+---
+
+### **GET /api/weather/stats**
 
 Returns yearly aggregated metrics per station.
 
 Example:
 
+```
 http://127.0.0.1:8000/api/weather/stats?page=1&page_size=5
+```
 
-🛠️ Technologies Used
+---
 
-Python 3.11
+#  **Technologies Used**
 
-SQLAlchemy ORM
+* Python 3.11
+* SQLAlchemy ORM
+* SQLite (lightweight DB for demo)
+* FastAPI
+* Uvicorn
+* Logging
+* Pagination & Query Filters
+* Data Normalization
+* OpenAPI + Swagger
 
-SQLite (lightweight DB for demo)
+---
 
-FastAPI
+#  **AWS Deployment Plan (Extra Credit)**
 
-Uvicorn
+To run this in AWS:
 
-Logging
+### **1. Storage (Raw Data)**
 
-Pagination & Query Filters
+* **S3 bucket** for weather files
+* Versioning enabled
 
-Data Normalization
+### **2. Ingestion Pipeline**
 
-OpenAPI + Swagger
+Run ingestion on a schedule using:
+
+* **AWS Lambda**
+  or
+* **AWS ECS Fargate** (for bigger jobs)
+
+Scheduling:
+
+* **EventBridge** cron trigger (e.g., daily 1 AM)
+
+### **3. Database**
+
+Use:
+
+* **Amazon RDS (PostgreSQL)** for relational tables
+* Or **Amazon Aurora Serverless v2** for auto-scaling
+
+### **4. API Deployment**
+
+Use:
+
+* **AWS ECS Fargate** to host FastAPI
+* **Application Load Balancer**
+* or **API Gateway** → Lambda
+
+### **5. Monitoring**
+
+* CloudWatch metrics
+* CloudWatch logs
+* X-Ray for tracing
+
+This architecture is cost-efficient and production-ready.
+
+
+#  **Project Completed**
+
+This repository contains a full end-to-end weather pipeline:
+
+✔ Ingestion
+✔ Transformation
+✔ Aggregation
+✔ API
+✔ Documentation
+✔ Deployment plan
+✔ Screenshots
+
