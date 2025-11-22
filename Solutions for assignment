@@ -1,0 +1,124 @@
+
+## **Problem 1 — Data Modeling**
+
+For the weather ingestion, I designed a clean and normalized schema using SQLite with SQLAlchemy ORM.
+
+### **Weather table**
+
+* Stores daily weather observations for each station
+* Columns include:
+
+  * `station_id`
+  * `date`
+  * `max_temp`
+  * `min_temp`
+  * `precip_mm`
+* Primary key: **(station_id, date)**
+
+  * Prevents duplicates automatically
+* Missing values (`-9999`) are handled during ingestion.
+
+This schema supports efficient filtering and aggregation.
+
+---
+
+## **Problem 2 — Data Ingestion**
+
+I built a reusable, idempotent ingestion pipeline:
+
+### features:
+
+* Reads 167 raw text files from `wx_data/`
+* Parses each line (date, max temp, min temp, precipitation)
+* Converts formats (e.g., tenths of degrees → degrees)
+* Converts invalid values (`-9999`) to `NULL`
+* Inserts data into SQLite with **ON CONFLICT IGNORE**
+
+  * Ensures no duplicate records even if re-ingested
+
+###  Logging
+
+During run, the script logs:
+
+* Start time
+* Total files processed
+* Records inserted
+* Records skipped
+* Duration
+
+###  Result
+
+Ingestion successfully processed **1.7 million+ rows** in a single run.
+
+---
+
+## **Problem 3 — Data Analysis / Statistics**
+
+I built an aggregation job that computes yearly metrics per station:
+
+### Metrics:
+
+* Average maximum temperature (°C)
+* Average minimum temperature (°C)
+* Total precipitation (cm)
+
+### Design:
+
+A new table was created: `YearlyWeatherStats`
+
+* Contains 1 row per station per year
+* Includes:
+
+  * `station_id`
+  * `year`
+  * `avg_max_temp`
+  * `avg_min_temp`
+  * `total_precip_cm`
+
+Missing values are ignored in calculations (SQL `AVG` automatically skips NULLs).
+
+The script:
+
+* Groups data by station + year
+* Computes metrics
+* Upserts results into the stats table
+* Logs total rows written
+
+Statistics for **4,820 station-year combinations** were generated.
+
+---
+
+## **Problem 4 — REST API (FastAPI)**
+
+I implemented a production-style REST API using FastAPI.
+
+### Endpoints:
+
+### **1. /api/weather**
+
+* Returns raw daily weather records
+* Supports filters:
+
+  * `station_id`
+  * `date`
+* Supports pagination:
+
+  * `page`
+  * `page_size`
+
+### **2. /api/weather/stats**
+
+* Returns yearly statistics
+* Supports filters:
+
+  * `station_id`
+  * `year`
+* Supports pagination
+
+### Features:
+
+* Uses SQLAlchemy sessions
+* Fully typed Pydantic response schemas
+* Automatically documented via Swagger/OpenAPI at `/docs`
+* Tested endpoints return correct JSON
+
