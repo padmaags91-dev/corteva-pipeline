@@ -192,51 +192,6 @@ http://127.0.0.1:8000/api/weather/stats?page=1&page_size=5
 
 ---
 
-#  **AWS Deployment Plan (Extra Credit)**
-
-To run this in AWS:
-
-### **1. Storage (Raw Data)**
-
-* **S3 bucket** for weather files
-* Versioning enabled
-
-### **2. Ingestion Pipeline**
-
-Run ingestion on a schedule using:
-
-* **AWS Lambda**
-  or
-* **AWS ECS Fargate** (for bigger jobs)
-
-Scheduling:
-
-* **EventBridge** cron trigger (e.g., daily 1 AM)
-
-### **3. Database**
-
-Use:
-
-* **Amazon RDS (PostgreSQL)** for relational tables
-* Or **Amazon Aurora Serverless v2** for auto-scaling
-
-### **4. API Deployment**
-
-Use:
-
-* **AWS ECS Fargate** to host FastAPI
-* **Application Load Balancer**
-* or **API Gateway** → Lambda
-
-### **5. Monitoring**
-
-* CloudWatch metrics
-* CloudWatch logs
-* X-Ray for tracing
-
-This architecture is cost-efficient and production-ready.
-
-
 #  **Project Completed**
 
 This repository contains a full end-to-end weather pipeline:
