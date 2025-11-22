@@ -28,7 +28,6 @@ Swagger UI + OpenAPI Schema
 
 Production-ready project structure
 
-📂 Project Structure
 corteva-pipeline/
 │
 ├── api/                     # FastAPI backend
@@ -44,6 +43,7 @@ corteva-pipeline/
 ├── weather.db               # SQLite database
 ├── screenshots/             # Added screenshots for HR review
 └── README.md
+
 
 📥 1. Data Ingestion
 
